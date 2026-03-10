@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Rushi Pavan Masuri – Portfolio</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --sf: -apple-system, 'SF Pro Display', BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+    --blur: blur(40px) saturate(180%);
+    --dock-blur: blur(30px) saturate(200%);
+    --icon-size: clamp(60px, 16vw, 76px);
+    --gap: clamp(14px, 4vw, 26px);
+  }
+
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    font-family: var(--sf);
+    background: #000;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  #phone-frame {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(ellipse at 30% 20%, #0f2027 0%, #203a43 40%, #2c5364 100%);
+    overflow: hidden;
+  }
+
+  #phone {
+    position: relative;
+    width: min(390px, 100vw);
+    height: min(844px, 100vh);
+    border-radius: clamp(0px, 4vw, 54px);
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.15),
+      0 40px 80px rgba(0,0,0,0.8),
+      inset 0 0 0 1.5px rgba(255,255,255,0.05);
+    background: #000;
+    animation: screen-on 0.8s ease forwards;
+  }
+
+  @keyframes screen-on {
+    0%{opacity:0;filter:brightness(0)}
+    100%{opacity:1;filter:brightness(1)}
+  }
+
+  .dynamic-island {
+    position: absolute;
+    top: 12px; left: 50%;
+    transform: translateX(-50%);
+    width: 126px; height: 37px;
+    background: #000;
+    border-radius: 20px;
+    z-index: 1000;
+  }
+
+  .status-bar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 54px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 28px 8px;
+    z-index: 999;
+    color: #fff;
+  }
+  .status-time { font-size: 15px; font-weight: 600; letter-spacing: -0.3px; }
+  .status-icons { display: flex; align-items: center; gap: 6px; }
+  .status-icons svg { width: 16px; height: 12px; fill: #fff; }
+  .battery-body {
+    width: 24px; height: 12px;
+    border: 1.5px solid rgba(255,255,255,0.8);
+    border-radius: 3px;
+    position: relative;
+    padding: 2px;
+  }
+  .battery-body::after {
+    content: '';
+    position: absolute;
+    right: -5px; top: 50%;
+    transform: translateY(-50%);
+    width: 3px; height: 6px;
+    background: rgba(255,255,255,0.6);
+    border-radius: 0 2px 2px 0;
+  }
+  .battery-fill { width: 75%; height: 100%; background: #4CD964; border-radius: 1px; }
+
+  /* Wallpaper – deep ocean teal/navy */
+  .wallpaper {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 15% 15%, rgba(0,180,180,0.7) 0%, transparent 45%),
+      radial-gradient(ellipse at 85% 25%, rgba(0,120,200,0.7) 0%, transparent 45%),
+      radial-gradient(ellipse at 50% 85%, rgba(0,80,160,0.5) 0%, transparent 50%),
+      radial-gradient(ellipse at 5% 80%, rgba(0,200,150,0.4) 0%, transparent 40%),
+      linear-gradient(160deg, #020c1b 0%, #0a1f35 35%, #0d2a40 65%, #020c1b 100%);
+    z-index: 0;
+  }
+  .wallpaper::before {
+    content: '';
+    position: absolute;
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,200,180,0.3), transparent);
+    top: 10%; left: 5%;
+    animation: float1 9s ease-in-out infinite;
+    filter: blur(35px);
+  }
+  .wallpaper::after {
+    content: '';
+    position: absolute;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,120,255,0.25), transparent);
+    bottom: 20%; right: 3%;
+    animation: float2 11s ease-in-out infinite;
+    filter: blur(28px);
+  }
+  @keyframes float1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(25px,-35px)} }
+  @keyframes float2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-18px,28px)} }
+
+  /* ─── LOCK SCREEN ─── */
+  #lock-screen {
+    position: absolute; inset: 0;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.4,0,0.2,1);
+  }
+  #lock-screen.unlocking { opacity: 0; transform: scale(1.05); pointer-events: none; }
+
+  .lock-time-section {
+    margin-top: 100px;
+    text-align: center;
+    color: #fff;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.4);
+  }
+  .lock-time {
+    font-size: clamp(72px, 20vw, 96px);
+    font-weight: 200;
+    letter-spacing: -4px;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .lock-date {
+    font-size: clamp(16px, 4.5vw, 20px);
+    font-weight: 400;
+    margin-top: 8px;
+    opacity: 0.9;
+  }
+  .lock-name {
+    margin-top: 6px;
+    font-size: 14px;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 0.5px;
+  }
+
+  .lock-notifications {
+    margin-top: 28px;
+    width: 88%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .notif-card {
+    background: rgba(255,255,255,0.13);
+    backdrop-filter: var(--blur);
+    -webkit-backdrop-filter: var(--blur);
+    border-radius: 16px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid rgba(255,255,255,0.18);
+  }
+  .notif-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .notif-content { flex: 1; }
+  .notif-app { font-size: 11px; color: rgba(255,255,255,0.55); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .notif-msg { font-size: 13px; color: #fff; font-weight: 400; margin-top: 2px; }
+  .notif-time { font-size: 12px; color: rgba(255,255,255,0.45); }
+
+  .swipe-hint {
+    position: absolute;
+    bottom: 48px; left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255,255,255,0.65);
+    font-size: 14px;
+    animation: pulse-hint 2s ease-in-out infinite;
+  }
+  .swipe-arrow {
+    width: 28px; height: 28px;
+    border-left: 2px solid rgba(255,255,255,0.65);
+    border-bottom: 2px solid rgba(255,255,255,0.65);
+    transform: rotate(-45deg);
+    animation: bounce-up 2s ease-in-out infinite;
+  }
+  @keyframes pulse-hint { 0%,100%{opacity:0.65} 50%{opacity:1} }
+  @keyframes bounce-up { 0%,100%{transform:translateY(0) rotate(-45deg)} 50%{transform:translateY(-9px) rotate(-45deg)} }
+
+  .home-indicator {
+    position: absolute;
+    bottom: 8px; left: 50%;
+    transform: translateX(-50%);
+    width: 134px; height: 5px;
+    background: rgba(255,255,255,0.32);
+    border-radius: 3px;
+    z-index: 999;
+  }
+
+  /* ─── HOME SCREEN ─── */
+  #home-screen {
+    position: absolute; inset: 0;
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+  #home-screen.visible { opacity: 1; pointer-events: all; }
+
+  .app-grid {
+    flex: 1;
+    padding: 70px 20px 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--gap);
+    align-content: start;
+  }
+
+  .app-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+  .app-icon-img {
+    width: var(--icon-size);
+    height: var(--icon-size);
+    border-radius: 22%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(26px, 7vw, 34px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 2px 6px rgba(0,0,0,0.3);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .app-icon:active .app-icon-img { transform: scale(0.88); }
+  .app-icon-img::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(160deg, rgba(255,255,255,0.22) 0%, transparent 60%);
+    border-radius: inherit;
+    pointer-events: none;
+  }
+  .app-label {
+    font-size: clamp(10px, 2.8vw, 12px);
+    color: #fff;
+    text-align: center;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.7);
+    font-weight: 400;
+    white-space: nowrap;
+  }
+
+  /* App gradients */
+  .bg-about    { background: linear-gradient(145deg, #00c9b1, #007cf0); }
+  .bg-skills   { background: linear-gradient(145deg, #f7971e, #ffd200); }
+  .bg-projects { background: linear-gradient(145deg, #4facfe, #00f2fe); }
+  .bg-exp      { background: linear-gradient(145deg, #43e97b, #38f9d7); }
+  .bg-contact  { background: linear-gradient(145deg, #fa709a, #fee140); }
+  .bg-edu      { background: linear-gradient(145deg, #a18cd1, #fbc2eb); }
+  .bg-certs    { background: linear-gradient(145deg, #ffecd2, #fcb69f); }
+  .bg-github   { background: linear-gradient(145deg, #1a1a2e, #4a4a6a); }
+  .bg-linkedin { background: linear-gradient(145deg, #0077b5, #00a0dc); }
+  .bg-resume   { background: linear-gradient(145deg, #ee0979, #ff6a00); }
+  .bg-data     { background: linear-gradient(145deg, #6a11cb, #2575fc); }
+  .bg-settings { background: linear-gradient(145deg, #8e9eab, #c8d6df); }
+
+  /* ─── DOCK ─── */
+  .dock {
+    margin: 0 12px 28px;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: var(--dock-blur);
+    -webkit-backdrop-filter: var(--dock-blur);
+    border-radius: 30px;
+    padding: 14px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
+
+  .page-dots {
+    display: flex;
+    justify-content: center;
+    gap: 7px;
+    padding: 6px 0 10px;
+  }
+  .page-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.35); }
+  .page-dot.active { background: #fff; width: 20px; border-radius: 4px; }
+
+  .badge {
+    position: absolute;
+    top: -4px; right: -4px;
+    width: 18px; height: 18px;
+    background: #ff3b30;
+    border-radius: 50%;
+    font-size: 10px; font-weight: 700; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    border: 2px solid rgba(0,0,0,0.3);
+    z-index: 10;
+  }
+
+  /* ─── MODAL ─── */
+  #app-modal {
+    position: absolute; inset: 0;
+    z-index: 200;
+    display: flex;
+    align-items: flex-end;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    background: rgba(0,0,0,0.01);
+  }
+  #app-modal.open { opacity: 1; pointer-events: all; background: rgba(0,0,0,0.5); }
+  #app-modal.open .modal-sheet { transform: translateY(0); }
+
+  .modal-sheet {
+    width: 100%;
+    max-height: 90%;
+    background: rgba(12,22,35,0.94);
+    backdrop-filter: blur(50px) saturate(200%);
+    -webkit-backdrop-filter: blur(50px) saturate(200%);
+    border-radius: 20px 20px 0 0;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.34,1.1,0.64,1);
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .modal-handle {
+    width: 36px; height: 5px;
+    background: rgba(255,255,255,0.28);
+    border-radius: 3px;
+    margin: 12px auto 0;
+  }
+  .modal-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 22px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .modal-icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+    flex-shrink: 0;
+  }
+  .modal-title { font-size: 20px; font-weight: 700; color: #fff; }
+  .modal-subtitle { font-size: 13px; color: rgba(255,255,255,0.45); margin-top: 2px; }
+  .modal-close {
+    margin-left: auto;
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    border: none;
+    color: rgba(255,255,255,0.65);
+    font-size: 16px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s;
+  }
+  .modal-close:hover { background: rgba(255,255,255,0.2); }
+  .modal-content {
+    padding: 20px 22px 44px;
+    color: rgba(255,255,255,0.85);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* Reusable UI pieces */
+  .info-card {
+    background: rgba(255,255,255,0.06);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 12px;
+    border: 1px solid rgba(255,255,255,0.07);
+  }
+  .info-card-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.38);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .info-card-value { font-size: 15px; color: #fff; }
+
+  .skill-item { margin-bottom: 14px; }
+  .skill-label { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 14px; color: #fff; }
+  .skill-bar-bg { height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
+  .skill-bar-fill { height: 100%; border-radius: 3px; width: 0%; transition: width 1s cubic-bezier(0.4,0,0.2,1) 0.15s; }
+
+  .project-card {
+    background: rgba(255,255,255,0.05);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 14px;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .project-title { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 6px; }
+  .project-desc { font-size: 13px; color: rgba(255,255,255,0.58); line-height: 1.55; }
+  .project-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .tag { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 500; }
+
+  .timeline-item { display: flex; gap: 14px; margin-bottom: 22px; position: relative; }
+  .timeline-dot { width: 12px; height: 12px; border-radius: 50%; margin-top: 4px; flex-shrink: 0; position: relative; z-index: 1; }
+  .timeline-line { position: absolute; left: 5px; top: 16px; bottom: -8px; width: 2px; background: rgba(255,255,255,0.08); }
+  .timeline-item:last-child .timeline-line { display: none; }
+  .timeline-year { font-size: 11px; color: rgba(255,255,255,0.38); font-weight: 600; }
+  .timeline-role { font-size: 15px; font-weight: 600; color: #fff; margin: 2px 0; }
+  .timeline-company { font-size: 13px; color: rgba(255,255,255,0.48); }
+
+  .contact-btn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 14px;
+    margin-bottom: 10px;
+    border: 1px solid rgba(255,255,255,0.07);
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    text-decoration: none;
+    color: #fff;
+  }
+  .contact-btn:active { background: rgba(255,255,255,0.12); transform: scale(0.98); }
+  .contact-icon {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .contact-label { font-size: 15px; font-weight: 500; }
+  .contact-value { font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 1px; }
+
+  .avatar {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    margin: 0 auto 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 40px;
+    background: linear-gradient(145deg, #00c9b1, #007cf0);
+    border: 3px solid rgba(255,255,255,0.18);
+  }
+  .hero-name { font-size: 22px; font-weight: 700; color: #fff; text-align: center; margin-bottom: 4px; }
+  .hero-role { font-size: 13px; color: rgba(255,255,255,0.48); text-align: center; margin-bottom: 20px; line-height: 1.5; }
+
+  @media (max-width: 430px) and (max-height: 932px) {
+    #phone { border-radius: 0; box-shadow: none; }
+  }
+  @media (max-width: 380px) {
+    :root { --icon-size: 58px; --gap: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="phone-frame">
+<div id="phone">
+
+  <div class="dynamic-island"></div>
+
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span class="status-time" id="status-time">9:41</span>
+    <div class="status-icons">
+      <svg viewBox="0 0 17 12"><rect x="0" y="7" width="3" height="5" rx="1" opacity=".4"/><rect x="4.5" y="4.5" width="3" height="7.5" rx="1" opacity=".6"/><rect x="9" y="2" width="3" height="10" rx="1" opacity=".8"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+      <svg viewBox="0 0 16 12" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round"><path d="M1 4.5a9.5 9.5 0 0114 0"/><path d="M3.5 7a6 6 0 019 0"/><path d="M6 9.5a2.5 2.5 0 014 0"/><circle cx="8" cy="11.5" r="1" fill="#fff" stroke="none"/></svg>
+      <div class="battery-body"><div class="battery-fill"></div></div>
+    </div>
+  </div>
+
+  <div class="wallpaper"></div>
+
+  <!-- ══════════ LOCK SCREEN ══════════ -->
+  <div id="lock-screen">
+    <div class="lock-time-section">
+      <div class="lock-time" id="lock-time">9:41</div>
+      <div class="lock-date" id="lock-date">Tuesday, March 10</div>
+      <div class="lock-name">Rushi Pavan Masuri</div>
+    </div>
+
+    <div class="lock-notifications">
+      <div class="notif-card">
+        <div class="notif-icon" style="background:linear-gradient(145deg,#43e97b,#38f9d7)">🎓</div>
+        <div class="notif-content">
+          <div class="notif-app">UIS</div>
+          <div class="notif-msg">M.S. Computer Science — Graduating May 2026 🎉</div>
+        </div>
+        <div class="notif-time">now</div>
+      </div>
+      <div class="notif-card">
+        <div class="notif-icon" style="background:linear-gradient(145deg,#00c9b1,#007cf0)">🌐</div>
+        <div class="notif-content">
+          <div class="notif-app">Work</div>
+          <div class="notif-msg">Web Editor Intern @ UIS — Currently Active</div>
+        </div>
+        <div class="notif-time">1m</div>
+      </div>
+      <div class="notif-card">
+        <div class="notif-icon" style="background:linear-gradient(145deg,#6a11cb,#2575fc)">📊</div>
+        <div class="notif-content">
+          <div class="notif-app">GitHub</div>
+          <div class="notif-msg">New project pushed: Heart Disease Analytics ❤️</div>
+        </div>
+        <div class="notif-time">4m</div>
+      </div>
+    </div>
+
+    <div class="swipe-hint">
+      <div class="swipe-arrow"></div>
+      <span>Swipe up to unlock</span>
+    </div>
+  </div>
+
+  <!-- ══════════ HOME SCREEN ══════════ -->
+  <div id="home-screen">
+    <div class="app-grid" id="app-grid">
+
+      <div class="app-icon" onclick="openApp('about')">
+        <div class="app-icon-img bg-about">👤</div>
+        <span class="app-label">About</span>
+      </div>
+      <div class="app-icon" onclick="openApp('skills')">
+        <div class="app-icon-img bg-skills">⚡</div>
+        <span class="app-label">Skills</span>
+      </div>
+      <div class="app-icon" onclick="openApp('projects')">
+        <div class="app-icon-img bg-projects" style="position:relative">🗂️<div class="badge">5</div></div>
+        <span class="app-label">Projects</span>
+      </div>
+      <div class="app-icon" onclick="openApp('experience')">
+        <div class="app-icon-img bg-exp">💼</div>
+        <span class="app-label">Experience</span>
+      </div>
+
+      <div class="app-icon" onclick="openApp('education')">
+        <div class="app-icon-img bg-edu">🎓</div>
+        <span class="app-label">Education</span>
+      </div>
+      <div class="app-icon" onclick="openApp('data')">
+        <div class="app-icon-img bg-data">📊</div>
+        <span class="app-label">Analytics</span>
+      </div>
+      <div class="app-icon" onclick="openApp('certs')">
+        <div class="app-icon-img bg-certs">🏆</div>
+        <span class="app-label">Certs</span>
+      </div>
+      <div class="app-icon" onclick="openApp('contact')">
+        <div class="app-icon-img bg-contact">✉️</div>
+        <span class="app-label">Contact</span>
+      </div>
+
+      <div class="app-icon" onclick="openApp('github')">
+        <div class="app-icon-img bg-github">🐙</div>
+        <span class="app-label">GitHub</span>
+      </div>
+      <div class="app-icon" onclick="openApp('linkedin')">
+        <div class="app-icon-img bg-linkedin" style="font-size:22px;font-weight:800;color:#fff">in</div>
+        <span class="app-label">LinkedIn</span>
+      </div>
+      <div class="app-icon" onclick="openApp('resume')">
+        <div class="app-icon-img bg-resume">📄</div>
+        <span class="app-label">Resume</span>
+      </div>
+      <div class="app-icon" onclick="openApp('settings')">
+        <div class="app-icon-img bg-settings">⚙️</div>
+        <span class="app-label">Settings</span>
+      </div>
+
+    </div>
+
+    <div class="page-dots">
+      <div class="page-dot active"></div>
+      <div class="page-dot"></div>
+    </div>
+
+    <div class="dock">
+      <div class="app-icon" onclick="openApp('about')">
+        <div class="app-icon-img bg-about" style="width:58px;height:58px;border-radius:18px">👤</div>
+      </div>
+      <div class="app-icon" onclick="openApp('projects')">
+        <div class="app-icon-img bg-projects" style="width:58px;height:58px;border-radius:18px">🗂️</div>
+      </div>
+      <div class="app-icon" onclick="openApp('contact')">
+        <div class="app-icon-img bg-contact" style="width:58px;height:58px;border-radius:18px">✉️</div>
+      </div>
+      <div class="app-icon" onclick="openApp('linkedin')">
+        <div class="app-icon-img bg-linkedin" style="width:58px;height:58px;border-radius:18px;font-size:22px;font-weight:800;color:#fff">in</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ MODAL ══════════ -->
+  <div id="app-modal" onclick="handleModalBackdrop(event)">
+    <div class="modal-sheet" id="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-header">
+        <div class="modal-icon" id="modal-icon-el"></div>
+        <div>
+          <div class="modal-title" id="modal-title"></div>
+          <div class="modal-subtitle" id="modal-subtitle"></div>
+        </div>
+        <button class="modal-close" onclick="closeApp()">✕</button>
+      </div>
+      <div class="modal-content" id="modal-content"></div>
+    </div>
+  </div>
+
+  <div class="home-indicator"></div>
+</div>
+</div>
+
+<script>
+// ─── CLOCK ───
+function updateClock() {
+  const now = new Date();
+  const h = now.getHours().toString().padStart(2,'0');
+  const m = now.getMinutes().toString().padStart(2,'0');
+  document.getElementById('lock-time').textContent = `${h}:${m}`;
+  document.getElementById('status-time').textContent = `${h}:${m}`;
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const now2 = new Date();
+  document.getElementById('lock-date').textContent = `${days[now2.getDay()]}, ${months[now2.getMonth()]} ${now2.getDate()}`;
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+// ─── UNLOCK ───
+const lockScreen = document.getElementById('lock-screen');
+const homeScreen = document.getElementById('home-screen');
+
+function unlock() {
+  lockScreen.classList.add('unlocking');
+  setTimeout(() => {
+    lockScreen.style.display = 'none';
+    homeScreen.classList.add('visible');
+    const icons = document.querySelectorAll('.app-icon');
+    icons.forEach((icon, i) => {
+      icon.style.opacity = '0';
+      icon.style.transform = 'scale(0.7) translateY(20px)';
+      icon.style.transition = `opacity 0.4s ease ${i*0.04}s, transform 0.4s cubic-bezier(0.34,1.4,0.64,1) ${i*0.04}s`;
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        icon.style.opacity = '1';
+        icon.style.transform = 'scale(1) translateY(0)';
+      }));
+    });
+  }, 500);
+}
+lockScreen.addEventListener('click', unlock);
+let tsY = 0;
+lockScreen.addEventListener('touchstart', e => { tsY = e.touches[0].clientY; }, {passive:true});
+lockScreen.addEventListener('touchend', e => { if (tsY - e.changedTouches[0].clientY > 60) unlock(); }, {passive:true});
+
+// ─── HELPERS ───
+const sb = (label, pct, grad) => `<div class="skill-item">
+  <div class="skill-label"><span>${label}</span><span style="color:rgba(255,255,255,0.4)">${pct}%</span></div>
+  <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="${pct}" style="background:${grad}"></div></div>
+</div>`;
+
+const statCard = (label, val, icon) => `<div class="info-card" style="text-align:center;padding:14px 10px">
+  <div style="font-size:24px">${icon}</div>
+  <div style="font-size:20px;font-weight:700;color:#fff;margin:4px 0">${val}</div>
+  <div style="font-size:11px;color:rgba(255,255,255,0.38)">${label}</div>
+</div>`;
+
+const bulletItem = t => `<div style="display:flex;gap:8px;align-items:flex-start;color:rgba(255,255,255,0.75);font-size:13px;margin-bottom:7px"><span style="color:rgba(0,200,180,0.8);flex-shrink:0;margin-top:1px">▸</span><span>${t}</span></div>`;
+
+// ─── APP DATA ───
+const apps = {
+
+  about: {
+    icon: '👤', bg: 'linear-gradient(145deg,#00c9b1,#007cf0)',
+    title: 'Rushi Pavan Masuri', subtitle: 'CS Graduate · Developer · Data Engineer',
+    content: () => `
+      <div class="avatar">RP</div>
+      <div class="hero-name">Rushi Pavan Masuri</div>
+      <div class="hero-role">Detail-oriented CS Graduate Student<br>Data · Web · Full-Stack Development</div>
+      <div class="info-card">
+        <div class="info-card-title">👋 Summary</div>
+        <div class="info-card-value" style="font-size:13px;line-height:1.65">Detail-oriented Computer Science graduate student with hands-on experience in Web Technologies, SQL, Python, data visualization (Power BI, Tableau), and ETL pipeline development. Proven ability to extract, validate, and transform complex datasets into actionable insights.</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-title">📍 Location</div>
+        <div class="info-card-value">Springfield, IL 🇺🇸</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-title">🎯 Seeking</div>
+        <div class="info-card-value">Data Engineering · Full-Stack Development · BI / Analytics roles</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-title">🌱 Current Status</div>
+        <div class="info-card-value">M.S. Computer Science @ UIS · Graduating May 2026</div>
+      </div>
+    `
+  },
+
+  skills: {
+    icon: '⚡', bg: 'linear-gradient(145deg,#f7971e,#ffd200)',
+    title: 'Skills', subtitle: 'Technical stack & proficiencies',
+    content: () => `
+      <div class="info-card">
+        <div class="info-card-title">Data & Reporting</div>
+        ${sb('SQL (MySQL)', 90, 'linear-gradient(90deg,#4facfe,#00f2fe)')}
+        ${sb('Python (Pandas, Matplotlib, Seaborn)', 88, 'linear-gradient(90deg,#f7971e,#ffd200)')}
+        ${sb('Power BI', 85, 'linear-gradient(90deg,#f093fb,#f5576c)')}
+        ${sb('Tableau', 80, 'linear-gradient(90deg,#43e97b,#38f9d7)')}
+        ${sb('Excel', 85, 'linear-gradient(90deg,#667eea,#764ba2)')}
+      </div>
+      <div class="info-card">
+        <div class="info-card-title">Programming & Development</div>
+        ${sb('HTML / CSS', 90, 'linear-gradient(90deg,#ee0979,#ff6a00)')}
+        ${sb('JavaScript', 78, 'linear-gradient(90deg,#f7971e,#ffd200)')}
+        ${sb('Python', 88, 'linear-gradient(90deg,#4facfe,#00f2fe)')}
+        ${sb('Java / Spring Boot', 75, 'linear-gradient(90deg,#43e97b,#38f9d7)')}
+        ${sb('React.js', 72, 'linear-gradient(90deg,#6a11cb,#2575fc)')}
+        ${sb('Django', 70, 'linear-gradient(90deg,#43e97b,#38f9d7)')}
+      </div>
+      <div class="info-card">
+        <div class="info-card-title">Cloud & DevOps</div>
+        ${sb('AWS S3 / Lambda / RDS', 78, 'linear-gradient(90deg,#f7971e,#ffd200)')}
+        ${sb('ETL Pipelines', 82, 'linear-gradient(90deg,#4facfe,#00f2fe)')}
+        ${sb('Docker', 68, 'linear-gradient(90deg,#00c9b1,#007cf0)')}
+        ${sb('Git / GitHub', 88, 'linear-gradient(90deg,#1a1a2e,#4a4a6a)')}
+        ${sb('Drupal CMS', 80, 'linear-gradient(90deg,#667eea,#764ba2)')}
+      </div>
+      <div class="info-card">
+        <div class="info-card-title">Analysis & Soft Skills</div>
+        ${sb('EDA & Statistical Analysis', 85, 'linear-gradient(90deg,#f093fb,#f5576c)')}
+        ${sb('Data Validation & Quality', 87, 'linear-gradient(90deg,#43e97b,#38f9d7)')}
+        ${sb('Agile / Project Management', 78, 'linear-gradient(90deg,#fa709a,#fee140)')}
+      </div>
+    `
+  },
+
+  projects: {
+    icon: '🗂️', bg: 'linear-gradient(145deg,#4facfe,#00f2fe)',
+    title: 'Projects', subtitle: '5 featured projects',
+    content: () => `
+      <div class="project-card">
+        <div class="project-title">🍽️ Restaurant Management System</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:8px">Aug 2025 – Dec 2025 · Software Engineering Capstone</div>
+        <div class="project-desc">Designed a normalized MySQL relational database schema managing tables, orders, menu items, employees, and role-based access control (RBAC). Built RESTful APIs with Java Spring Boot; validated with Postman.</div>
+        <div class="project-tags">
+          <span class="tag" style="background:rgba(67,233,123,0.15);color:#43e97b">MySQL</span>
+          <span class="tag" style="background:rgba(249,115,22,0.15);color:#f97316">Spring Boot</span>
+          <span class="tag" style="background:rgba(139,92,246,0.15);color:#8b5cf6">Java</span>
+          <span class="tag" style="background:rgba(79,172,254,0.15);color:#4facfe">Postman</span>
+          <span class="tag" style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.6)">GitHub</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-title">❤️ Heart Disease Data Visualization</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:8px">Nov 2024 – Dec 2024 · UIS Data Visualization Course</div>
+        <div class="project-desc">Conducted EDA on 1,025 patient records using Python/Pandas. Built professional dashboards with histograms, boxplots, scatterplots, and correlation heatmaps. Identified predictors like chest pain type and max heart rate.</div>
+        <div class="project-tags">
+          <span class="tag" style="background:rgba(249,115,22,0.15);color:#f97316">Python</span>
+          <span class="tag" style="background:rgba(236,72,153,0.15);color:#ec4899">Pandas</span>
+          <span class="tag" style="background:rgba(99,102,241,0.15);color:#6366f1">Matplotlib</span>
+          <span class="tag" style="background:rgba(20,184,166,0.15);color:#14b8a6">Seaborn</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-title">🏠 Airbnb Analytics Dashboard</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:8px">May 2024 – Aug 2024</div>
+        <div class="project-desc">Designed and queried relational database schemas using MySQL for multi-dimensional datasets. Created dynamic Power BI dashboards presenting KPIs across demographic and operational data for stakeholders.</div>
+        <div class="project-tags">
+          <span class="tag" style="background:rgba(67,233,123,0.15);color:#43e97b">MySQL</span>
+          <span class="tag" style="background:rgba(245,158,11,0.15);color:#f59e0b">Power BI</span>
+          <span class="tag" style="background:rgba(79,172,254,0.15);color:#4facfe">SQL</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-title">🔍 Fraud Detection – Health Insurance ML</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:8px">Sep 2023 – Jan 2024</div>
+        <div class="project-desc">Analyzed large healthcare datasets to identify fraud patterns using Decision Tree, Naive Bayes, SVM, and Logistic Regression. Deployed a user-facing reporting interface with Django translating ML outputs into accessible visualizations.</div>
+        <div class="project-tags">
+          <span class="tag" style="background:rgba(249,115,22,0.15);color:#f97316">Python</span>
+          <span class="tag" style="background:rgba(139,92,246,0.15);color:#8b5cf6">Scikit-learn</span>
+          <span class="tag" style="background:rgba(67,233,123,0.15);color:#43e97b">Django</span>
+          <span class="tag" style="background:rgba(236,72,153,0.15);color:#ec4899">ML</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-title">🛍️ Myntra Sales Dashboard</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:8px">Jan 2023 – Mar 2023 · Team Project</div>
+        <div class="project-desc">Collaborated on building a comprehensive sales analytics dashboard for Myntra's e-commerce data. Applied BI tools to deliver actionable retail insights and visualizations.</div>
+        <div class="project-tags">
+          <span class="tag" style="background:rgba(245,158,11,0.15);color:#f59e0b">Power BI</span>
+          <span class="tag" style="background:rgba(67,233,123,0.15);color:#43e97b">MySQL</span>
+          <span class="tag" style="background:rgba(249,115,22,0.15);color:#f97316">Python</span>
+        </div>
+      </div>
+    `
+  },
+
+  experience: {
+    icon: '💼', bg: 'linear-gradient(145deg,#43e97b,#38f9d7)',
+    title: 'Experience', subtitle: '3 roles · Data, Web & Engineering',
+    content: () => `
+      <div style="padding:4px 0">
+
+        <div class="timeline-item">
+          <div style="position:relative;flex-shrink:0">
+            <div class="timeline-dot" style="background:linear-gradient(145deg,#00c9b1,#007cf0)"></div>
+            <div class="timeline-line"></div>
+          </div>
+          <div style="flex:1">
+            <div class="timeline-year">Jan 2026 – Present</div>
+            <div class="timeline-role">Web Editor Intern – Graduate Assistant</div>
+            <div class="timeline-company">University of Illinois Springfield · Springfield, IL</div>
+            <div class="info-card" style="margin-top:10px">
+              ${bulletItem('Manage & validate website data using Drupal CMS with WCAG accessibility compliance')}
+              ${bulletItem('Build web forms using ATLAS Form Builder; use Siteimprove AI for QA & accessibility')}
+              ${bulletItem('Apply HTML, CSS & accessibility best practices to optimize site usability')}
+              ${bulletItem('Produce and review reports on website update requests for stakeholders')}
+              ${bulletItem('Fix broken links and PDFs; coordinate with cross-functional web teams')}
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div style="position:relative;flex-shrink:0">
+            <div class="timeline-dot" style="background:linear-gradient(145deg,#f7971e,#ffd200)"></div>
+            <div class="timeline-line"></div>
+          </div>
+          <div style="flex:1">
+            <div class="timeline-year">Aug 2025 – Dec 2025</div>
+            <div class="timeline-role">Athletics Event Staff – Ticketing & Operations</div>
+            <div class="timeline-company">University of Illinois Springfield · Springfield, IL</div>
+            <div class="info-card" style="margin-top:10px">
+              ${bulletItem('Managed real-time ticket scanning, sales data, and spectator entry logistics')}
+              ${bulletItem('Maintained accurate record-keeping across multiple concurrent events')}
+              ${bulletItem('Tracked attendance patterns and reported operational issues to supervisors')}
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div style="position:relative;flex-shrink:0">
+            <div class="timeline-dot" style="background:linear-gradient(145deg,#6a11cb,#2575fc)"></div>
+            <div class="timeline-line"></div>
+          </div>
+          <div style="flex:1">
+            <div class="timeline-year">Mar 2024 – Jun 2024</div>
+            <div class="timeline-role">Data Engineer Intern</div>
+            <div class="timeline-company">Talentas Technology · Hyderabad, India</div>
+            <div class="info-card" style="margin-top:10px">
+              ${bulletItem('ETL of large-scale datasets using Python, AWS S3, Lambda, RDS, and MySQL')}
+              ${bulletItem('Developed & optimized SQL queries; performance tuning for scalability')}
+              ${bulletItem('Created Power BI dashboards communicating healthcare data trends to non-technical stakeholders')}
+              ${bulletItem('Achieved 25% reduction in data processing time for a healthcare client')}
+              ${bulletItem('Validated data accuracy through rigorous testing; maintained production schedules')}
+            </div>
+          </div>
+        </div>
+
+      </div>
+    `
+  },
+
+  education: {
+    icon: '🎓', bg: 'linear-gradient(145deg,#a18cd1,#fbc2eb)',
+    title: 'Education', subtitle: 'M.S. CS · B.Tech CS',
+    content: () => `
+      <div class="project-card">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+          <div style="font-size:36px">🎓</div>
+          <div>
+            <div class="project-title" style="margin-bottom:2px">Master of Science in Computer Science</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.5)">University of Illinois Springfield (UIS)</div>
+            <div style="font-size:12px;color:rgba(161,140,209,0.9);margin-top:2px">Springfield, IL · Graduating May 2026</div>
+          </div>
+        </div>
+        <div class="info-card" style="margin-bottom:0">
+          <div class="info-card-title">Relevant Coursework</div>
+          <div class="project-tags" style="margin-top:0">
+            <span class="tag" style="background:rgba(161,140,209,0.15);color:#a18cd1">Data Visualization</span>
+            <span class="tag" style="background:rgba(161,140,209,0.15);color:#a18cd1">Advanced Database</span>
+            <span class="tag" style="background:rgba(161,140,209,0.15);color:#a18cd1">Computer Security</span>
+            <span class="tag" style="background:rgba(161,140,209,0.15);color:#a18cd1">Security Testing</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+          <div style="font-size:36px">🏛️</div>
+          <div>
+            <div class="project-title" style="margin-bottom:2px">Bachelor of Technology in Computer Science</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.5)">St Martin's Engineering College</div>
+            <div style="font-size:12px;color:rgba(79,172,254,0.9);margin-top:2px">Hyderabad, India · Dec 2020 – May 2024</div>
+          </div>
+        </div>
+        <div class="info-card" style="margin-bottom:0">
+          <div class="info-card-title">Relevant Coursework</div>
+          <div class="project-tags" style="margin-top:0">
+            <span class="tag" style="background:rgba(79,172,254,0.15);color:#4facfe">Python</span>
+            <span class="tag" style="background:rgba(79,172,254,0.15);color:#4facfe">DBMS</span>
+            <span class="tag" style="background:rgba(79,172,254,0.15);color:#4facfe">Java</span>
+            <span class="tag" style="background:rgba(79,172,254,0.15);color:#4facfe">Computer Networks</span>
+            <span class="tag" style="background:rgba(79,172,254,0.15);color:#4facfe">Software Engineering</span>
+            <span class="tag" style="background:rgba(79,172,254,0.15);color:#4facfe">Machine Learning</span>
+          </div>
+        </div>
+      </div>
+    `
+  },
+
+  data: {
+    icon: '📊', bg: 'linear-gradient(145deg,#6a11cb,#2575fc)',
+    title: 'Analytics Stack', subtitle: 'Data tools & platforms',
+    content: () => `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+        ${statCard('SQL Projects', '4+', '🗄️')}
+        ${statCard('BI Dashboards', '5+', '📊')}
+        ${statCard('ML Models', '4', '🤖')}
+        ${statCard('AWS Services', '3', '☁️')}
+      </div>
+      <div class="info-card">
+        <div class="info-card-title">Data Tools & Platforms</div>
+        ${bulletItem('AWS S3 · AWS Lambda · AWS RDS')}
+        ${bulletItem('ETL Pipelines (Python-based)')}
+        ${bulletItem('Power BI · Tableau')}
+        ${bulletItem('MySQL · PostgreSQL')}
+        ${bulletItem('Pandas · Matplotlib · Seaborn')}
+        ${bulletItem('Business Intelligence & Reporting')}
+      </div>
+      <div class="info-card">
+        <div class="info-card-title">Analysis Capabilities</div>
+        ${bulletItem('Exploratory Data Analysis (EDA)')}
+        ${bulletItem('Statistical Analysis & Correlation')}
+        ${bulletItem('Data Validation & Quality Assurance')}
+        ${bulletItem('Healthcare Data Analytics')}
+        ${bulletItem('Machine Learning (Classification)')}
+        ${bulletItem('Data Visualization for Non-Technical Stakeholders')}
+      </div>
+      <div class="info-card">
+        <div class="info-card-title">⚡ Key Achievement</div>
+        <div class="info-card-value" style="font-size:13px">Achieved a <span style="color:#4facfe;font-weight:600">25% reduction</span> in data processing time for a healthcare client at Talentas Technology through optimized ETL pipelines and SQL performance tuning.</div>
+      </div>
+    `
+  },
+
+  certs: {
+    icon: '🏆', bg: 'linear-gradient(145deg,#ffecd2,#fcb69f)',
+    title: 'Certifications', subtitle: '3 verified credentials',
+    content: () => `
+      <div class="project-card">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="font-size:32px">☕</div>
+          <div>
+            <div class="project-title" style="margin-bottom:2px">Java Skill Assessment</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.5)">HackerRank · Verified</div>
+          </div>
+          <div style="margin-left:auto;padding:4px 10px;background:rgba(67,233,123,0.15);border-radius:20px;font-size:11px;color:#43e97b;font-weight:600">✓ Verified</div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="font-size:32px">🐍</div>
+          <div>
+            <div class="project-title" style="margin-bottom:2px">Python Programming</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.5)">Udemy</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="font-size:32px">🌐</div>
+          <div>
+            <div class="project-title" style="margin-bottom:2px">Web Development</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.5)">Coursera</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-card-title">Tools Proficiency</div>
+        <div class="project-tags" style="margin-top:0">
+          <span class="tag" style="background:rgba(79,172,254,0.15);color:#4facfe">Postman</span>
+          <span class="tag" style="background:rgba(67,233,123,0.15);color:#43e97b">Docker</span>
+          <span class="tag" style="background:rgba(245,158,11,0.15);color:#f59e0b">Agile</span>
+          <span class="tag" style="background:rgba(139,92,246,0.15);color:#8b5cf6">REST APIs</span>
+          <span class="tag" style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.6)">Drupal</span>
+          <span class="tag" style="background:rgba(236,72,153,0.15);color:#ec4899">Siteimprove</span>
+          <span class="tag" style="background:rgba(249,115,22,0.15);color:#f97316">WCAG</span>
+        </div>
+      </div>
+    `
+  },
+
+  contact: {
+    icon: '✉️', bg: 'linear-gradient(145deg,#fa709a,#fee140)',
+    title: 'Contact', subtitle: "Let's connect!",
+    content: () => `
+      <div style="text-align:center;margin-bottom:22px">
+        <div style="font-size:44px;margin-bottom:8px">👋</div>
+        <div style="color:#fff;font-size:17px;font-weight:600">Open to Opportunities</div>
+        <div style="color:rgba(255,255,255,0.48);font-size:13px;margin-top:4px">Data Engineering · Full-Stack · BI / Analytics</div>
+      </div>
+      <a class="contact-btn" href="mailto:rushipavan5@gmail.com">
+        <div class="contact-icon" style="background:linear-gradient(145deg,#fa709a,#fee140)">📧</div>
+        <div><div class="contact-label">Email</div><div class="contact-value">rushipavan5@gmail.com</div></div>
+      </a>
+      <a class="contact-btn" href="tel:+12172203059">
+        <div class="contact-icon" style="background:linear-gradient(145deg,#43e97b,#38f9d7)">📞</div>
+        <div><div class="contact-label">Phone</div><div class="contact-value">(217) 220-3059</div></div>
+      </a>
+      <a class="contact-btn" href="https://linkedin.com" target="_blank">
+        <div class="contact-icon" style="background:linear-gradient(145deg,#0077b5,#00a0dc)">💼</div>
+        <div><div class="contact-label">LinkedIn</div><div class="contact-value">linkedin.com/in/rushipavanmasuri</div></div>
+      </a>
+      <div class="info-card" style="margin-top:6px">
+        <div class="info-card-title">📍 Based In</div>
+        <div class="info-card-value">Springfield, Illinois, USA</div>
+      </div>
+    `
+  },
+
+  github: {
+    icon: '🐙', bg: 'linear-gradient(145deg,#1a1a2e,#4a4a6a)',
+    title: 'GitHub', subtitle: 'Projects & open source',
+    content: () => `
+      <div class="info-card" style="text-align:center;padding:20px">
+        <div style="font-size:44px">🐙</div>
+        <div style="font-size:17px;font-weight:600;color:#fff;margin:8px 0">github.com/rushipavan</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.45)">Heart Disease Analytics · Airbnb Dashboard · Fraud Detection</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+        ${statCard('Repositories', '5+', '🗂️')}
+        ${statCard('ML Projects', '2', '🤖')}
+        ${statCard('BI Projects', '2', '📊')}
+        ${statCard('Full-Stack', '1', '🖥️')}
+      </div>
+      <a class="contact-btn" href="https://github.com" target="_blank">
+        <div class="contact-icon" style="background:linear-gradient(145deg,#1a1a2e,#4a4a6a)">🐙</div>
+        <div><div class="contact-label">Visit GitHub</div><div class="contact-value">github.com/rushipavan</div></div>
+      </a>
+    `
+  },
+
+  linkedin: {
+    icon: 'in', bg: 'linear-gradient(145deg,#0077b5,#00a0dc)',
+    title: 'LinkedIn', subtitle: 'Professional network',
+    content: () => `
+      <div class="info-card" style="text-align:center;padding:20px">
+        <div style="font-size:44px">💼</div>
+        <div style="font-size:17px;font-weight:600;color:#fff;margin:8px 0">Rushi Pavan Masuri</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.45)">CS Graduate Student @ UIS · Data & Web Developer</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-title">Headline</div>
+        <div class="info-card-value" style="font-size:13px">Detail-oriented CS grad with expertise in Python, SQL, Power BI, AWS, and full-stack web development. Seeking Data Engineering & Analytics roles.</div>
+      </div>
+      <a class="contact-btn" href="https://linkedin.com" target="_blank">
+        <div class="contact-icon" style="background:linear-gradient(145deg,#0077b5,#00a0dc);font-weight:800;font-size:18px;color:#fff">in</div>
+        <div><div class="contact-label">View LinkedIn Profile</div><div class="contact-value">From your resume · update link</div></div>
+      </a>
+    `
+  },
+
+  resume: {
+    icon: '📄', bg: 'linear-gradient(145deg,#ee0979,#ff6a00)',
+    title: 'Resume', subtitle: 'Rushi Pavan Masuri · 2026',
+    content: () => `
+      <div class="info-card" style="text-align:center;padding:22px">
+        <div style="font-size:48px;margin-bottom:8px">📄</div>
+        <div style="font-size:17px;font-weight:600;color:#fff">Rushi Pavan Masuri</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.45);margin-top:4px">rushipavan5@gmail.com · (217) 220-3059</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-title">Quick Facts</div>
+        ${bulletItem('M.S. Computer Science · UIS · May 2026')}
+        ${bulletItem('B.Tech CS · St Martin\'s College, Hyderabad · 2024')}
+        ${bulletItem('Data Engineer Intern @ Talentas Technology')}
+        ${bulletItem('Web Editor Graduate Assistant @ UIS (current)')}
+        ${bulletItem('Python · SQL · Power BI · AWS · React · Django')}
+        ${bulletItem('25% ETL performance improvement at Talentas')}
+      </div>
+      <a class="contact-btn" href="#" onclick="alert('Add your resume PDF link here!')">
+        <div class="contact-icon" style="background:linear-gradient(145deg,#ee0979,#ff6a00)">⬇️</div>
+        <div><div class="contact-label">Download PDF</div><div class="contact-value">Rushi_Pavan_Masuri_Resume.pdf</div></div>
+      </a>
+    `
+  },
+
+  settings: {
+    icon: '⚙️', bg: 'linear-gradient(145deg,#8e9eab,#c8d6df)',
+    title: 'Settings', subtitle: 'Portfolio info',
+    content: () => `
+      <div class="info-card">
+        <div class="info-card-title">About This Portfolio</div>
+        <div class="info-card-value" style="font-size:13px">Built with pure HTML, CSS & JavaScript. iOS 18 design language. No frameworks, no dependencies.</div>
+      </div>
+      <div style="border-bottom:1px solid rgba(255,255,255,0.06)">
+        ${row('🌙','Dark Mode','On','#1a1a2e')}
+        ${row('📍','Location','Springfield, IL','#4facfe')}
+        ${row('🎓','Status','Graduate Student','#a18cd1')}
+        ${row('💼','Available','Open to Work ✅','#43e97b')}
+        ${row('📱','Version','Portfolio v1.0','#f093fb')}
+      </div>
+      <div style="margin-top:20px;text-align:center;color:rgba(255,255,255,0.28);font-size:12px">
+        Made with ❤️ — Rushi Pavan Masuri<br>© 2026 · Springfield, IL
+      </div>
+    `
+  }
+};
+
+function row(icon, label, val, color) {
+  return `<div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05)">
+    <div style="width:32px;height:32px;border-radius:9px;background:${color};display:flex;align-items:center;justify-content:center;font-size:16px">${icon}</div>
+    <div style="flex:1;color:#fff;font-size:15px">${label}</div>
+    <div style="color:rgba(255,255,255,0.38);font-size:13px">${val}</div>
+  </div>`;
+}
+
+// ─── OPEN / CLOSE ───
+function openApp(id) {
+  const app = apps[id];
+  if (!app) return;
+  const modal = document.getElementById('app-modal');
+  document.getElementById('modal-icon-el').textContent = app.icon;
+  document.getElementById('modal-icon-el').style.background = app.bg;
+  document.getElementById('modal-title').textContent = app.title;
+  document.getElementById('modal-subtitle').textContent = app.subtitle;
+  document.getElementById('modal-content').innerHTML = app.content();
+  modal.classList.add('open');
+  document.getElementById('modal-sheet').scrollTop = 0;
+  setTimeout(() => {
+    document.querySelectorAll('.skill-bar-fill').forEach(b => { b.style.width = b.dataset.width + '%'; });
+  }, 120);
+}
+
+function closeApp() {
+  const sheet = document.getElementById('modal-sheet');
+  sheet.style.transform = 'translateY(100%)';
+  setTimeout(() => {
+    document.getElementById('app-modal').classList.remove('open');
+    sheet.style.transform = '';
+  }, 400);
+}
+
+function handleModalBackdrop(e) {
+  if (e.target === document.getElementById('app-modal')) closeApp();
+}
+
+const ms = document.getElementById('modal-sheet');
+let mts = 0;
+ms.addEventListener('touchstart', e => { mts = e.touches[0].clientY; }, {passive:true});
+ms.addEventListener('touchend', e => { if (e.changedTouches[0].clientY - mts > 80 && ms.scrollTop === 0) closeApp(); }, {passive:true});
+</script>
+</body>
+</html>
